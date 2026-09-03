@@ -3,83 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Analiz-TKM | Futbol Live & AI Analiz</title>
+    <title>Analiz TKM - Janly Futbol Analizleri</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #121212; color: #e0e0e0; padding: 15px; }
-        header { text-align: center; padding: 20px 0; background: #1f1f1f; border-radius: 10px; margin-bottom: 20px; border: 1px solid #333; }
-        h1 { color: #00ff88; font-size: 24px; margin-bottom: 5px; }
-        p { color: #aaa; font-size: 14px; }
-        .container { max-width: 600px; margin: 0 auto; }
-        .match-card { background: #1e1e1e; border: 1px solid #2a2a2a; padding: 15px; margin-bottom: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .team-info { display: flex; flex-direction: column; gap: 5px; }
-        .league { font-size: 11px; color: #00ff88; text-transform: uppercase; font-weight: bold; }
-        .teams { font-size: 15px; font-weight: 600; }
-        .time { font-size: 12px; color: #888; }
-        .btn-analiz { background: linear-gradient(45deg, #00c853, #b2ff59); color: #000; font-weight: bold; border: none; padding: 10px 14px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
-        .btn-analiz:hover { opacity: 0.9; transform: scale(1.02); }
-
-        /* Modal / Popup Stilleri */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); justify-content: center; align-items: center; padding: 15px; }
-        .modal-content { background: #1e1e1e; border: 1px solid #00ff88; padding: 20px; border-radius: 12px; max-width: 500px; width: 100%; position: relative; }
-        .close-btn { position: absolute; top: 10px; right: 15px; color: #fff; font-size: 22px; cursor: pointer; }
-        .stat-bar { background: #333; height: 10px; border-radius: 5px; margin: 10px 0; overflow: hidden; display: flex; }
-        .stat-fill { background: #00ff88; height: 100%; }
+        body { font-family: Arial, sans-serif; background-color: #121212; color: #ffffff; padding: 20px; }
+        .match-card { background-color: #1e1e1e; border-radius: 8px; padding: 15px; margin-bottom: 10px; border-left: 4px solid #00e676; }
+        .teams { font-weight: bold; font-size: 1.1em; }
+        .score { color: #00e676; float: right; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>ANALIZ-TKM</h1>
-            <p>Janly Matçlar & Matematiki AI Çaklamalar</p>
-        </header>
 
-        <h2 style="font-size: 16px; margin-bottom: 10px; color: #fff;">Bugünki Duşuşyklar</h2>
-
-        <div class="match-card">
-            <div class="team-info">
-                <span class="league">La Liga • 22:00</span>
-                <span class="teams">Real Madrid vs Barcelona</span>
-                <span class="time">AI Çaklama Taýýar</span>
-            </div>
-            <button class="btn-analiz" onclick="openAnaliz('Real Madrid vs Barcelona', '88%', 'Real Madrid Ýeňer', '65%', '35%')">Analiz %88</button>
-        </div>
-
-        <div class="match-card">
-            <div class="team-info">
-                <span class="league">Premier League • 20:30</span>
-                <span class="teams">Man. City vs Arsenal</span>
-                <span class="time">AI Çaklama Taýýar</span>
-            </div>
-            <button class="btn-analiz" onclick="openAnaliz('Man. City vs Arsenal', '82%', 'Gollar: 2.5 Üst', '55%', '45%')">Analiz %82</button>
-        </div>
-    </div>
-
-    <div class="modal" id="analizModal">
-        <div class="modal-content">
-            <span class="close-btn" onclick="closeAnaliz()">&times;</span>
-            <h3 id="modalTitle" style="color:#00ff88; margin-bottom:15px;"></h3>
-            <p><strong>AI Diagnostika:</strong> <span id="modalPrediction"></span></p>
-            <p><strong>Utuş Ähtimallygy:</strong> <span id="modalPercent"></span></p>
-            
-            <div class="stat-bar">
-                <div class="stat-fill" id="statFill" style="width: 50%;"></div>
-            </div>
-            <small style="color:#aaa;">Poisson & Dixon-Coles matematiki modeli boýunça hasaplandy.</small>
-        </div>
-    </div>
+    <h1>Janly Futbol Matçlary We Çaklamalar</h1>
+    <div id="matches-list">Maglumatlar ýüklenýär...</div>
 
     <script>
-        function openAnaliz(teams, percent, pred, team1Stat, team2Stat) {
-            document.getElementById('modalTitle').innerText = teams;
-            document.getElementById('modalPrediction').innerText = pred;
-            document.getElementById('modalPercent').innerText = percent;
-            document.getElementById('statFill').style.width = team1Stat;
-            document.getElementById('analizModal').style.display = 'flex';
+        const apiKey = '7feb70cfe2msh7665803609e923fp134924jsncb7da24b9df4';
+        const apiHost = 'sportapi7.p.rapidapi.com';
+
+        async function getLiveMatches() {
+            const url = 'https://sportapi7.p.rapidapi.com/api/v1/sport/football/events/live';
+            const options = {
+                method: 'GET',
+                headers: {
+                    'x-rapidapi-key': apiKey,
+                    'x-rapidapi-host': apiHost
+                }
+            };
+
+            try {
+                const response = await fetch(url, options);
+                const data = await response.json();
+                
+                const container = document.getElementById('matches-list');
+                container.innerHTML = '';
+
+                if (data.events && data.events.length > 0) {
+                    data.events.forEach(event => {
+                        const homeTeam = event.homeTeam.name;
+                        const awayTeam = event.awayTeam.name;
+                        const homeScore = event.homeScore.current || 0;
+                        const awayScore = event.awayScore.current || 0;
+
+                        container.innerHTML += `
+                            <div class="match-card">
+                                <span class="teams">${homeTeam} vs ${awayTeam}</span>
+                                <span class="score">${homeScore} - ${awayScore}</span>
+                            </div>
+                        `;
+                    });
+                } else {
+                    container.innerHTML = '<p>Şu wagt janly geçirilýän matç ýok.</p>';
+                }
+            } catch (error) {
+                console.error('Yalňyşlyk:', error);
+                document.getElementById('matches-list').innerText = 'Maglumatlary altyrmakda ýalňyşlyk ýüze çykdy.';
+            }
         }
-        function closeAnaliz() {
-            document.getElementById('analizModal').style.display = 'none';
-        }
+
+        // Saýt açylanda matçlary çekýär
+        getLiveMatches();
     </script>
+
 </body>
 </html>
