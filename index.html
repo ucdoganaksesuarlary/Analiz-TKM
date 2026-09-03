@@ -14,12 +14,13 @@
         .score { color: #00e676; font-size: 1.1rem; }
         .ai-analysis { margin-top: 10px; padding-top: 8px; border-top: 1px solid #333; font-size: 0.85rem; color: #b0bec5; }
         .badge { background: #263238; color: #80d8ff; padding: 3px 6px; border-radius: 4px; font-weight: bold; }
+        .team-name { color: #00e676; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <h1>Analiz-TKM (Janly AI)</h1>
+        <h1>Analiz-TKM (Takyk AI)</h1>
         <button class="refresh-btn" onclick="getLiveMatches()">Täzele 🔄</button>
     </div>
 
@@ -29,24 +30,36 @@
         const apiKey = '7feb70cfe2msh7665803609e923fp134924jsncb7da24b9df4';
         const apiHost = 'sportapi7.p.rapidapi.com';
 
-        // Algoritmiki AI Analiz Generatory
-        function generateAIAnalysis(homeScore, awayScore) {
+        // Komanda atlary bilen Kämilleşdirilen AI Analiz Generatory
+        function generateAIAnalysis(homeTeam, awayTeam, homeScore, awayScore) {
             const totalGoals = homeScore + awayScore;
             let prediction = "";
             let confidence = "";
 
-            if (totalGoals >= 3) {
-                prediction = "Köplenç hüjümçi oýun: Ýene 1 gol bolmak ähtimallygy ýokary (Over 3.5/4.5)";
-                confidence = "85%";
-            } else if (totalGoals === 0) {
-                prediction = "Ätiýaçly oýun: 2-nji ýarymda T.O 0.5 köp ýa-da Garşylykly gol (GG)";
-                confidence = "70%";
+            if (homeScore === 0 && awayScore === 0) {
+                prediction = `<span class="team-name">${homeTeam}</span> we <span class="team-name">${awayTeam}</span> entek ätiýaçly oýnaýar: 2-nji ýarymda T.O 0.5 köp gol bolar.`;
+                confidence = "72%";
             } else if (homeScore > awayScore) {
-                prediction = "Meydan eýesi bökdençsiz gözegçilik edýär: Ýeňiş (P1) ýa-da Indiki Gol (Meydan eýesi)";
-                confidence = "78%";
-            } else {
-                prediction = "Miçewsa hüjümli oýun: 1.5 Gol Köp (Over 1.5) Ähtimallygy Barlygy";
-                confidence = "80%";
+                const diff = homeScore - awayScore;
+                if (diff >= 2) {
+                    prediction = `<span class="team-name">${homeTeam}</span> doly agrasyp dur: Oýun ýeňşi (${homeTeam}) ýa-da Indiki goly hem ${homeTeam} urar.`;
+                    confidence = "88%";
+                } else {
+                    prediction = `<span class="team-name">${homeTeam}</span> öňde barýar, ýöne <span class="team-name">${awayTeam}</span> hem jogap goly urup biler (Garşylykly Gol - GG).`;
+                    confidence = "79%";
+                }
+            } else if (awayScore > homeScore) {
+                const diff = awayScore - homeScore;
+                if (diff >= 2) {
+                    prediction = `<span class="team-name">${awayTeam}</span> miçewsa meýdanda basyş edýär: Ýeňiş (${awayTeam}) ýa-da Indiki gol (${awayTeam}).`;
+                    confidence = "85%";
+                } else {
+                    prediction = `<span class="team-name">${awayTeam}</span> öňe geçdi: <span class="team-name">${homeTeam}</span> deňlemek üçin hüjüm eder (Indiki Gol: ${homeTeam}).`;
+                    confidence = "76%";
+                }
+            } else if (homeScore === awayScore && totalGoals > 0) {
+                prediction = `<span class="team-name">${homeTeam}</span> we <span class="team-name">${awayTeam}</span> hüjümçi futbol görkezýär: Deňe-deň oýunda ýene 1 gol (Over ${totalGoals + 0.5}) urular.`;
+                confidence = "82%";
             }
 
             return { prediction, confidence };
@@ -76,7 +89,7 @@
                         const homeScore = event.homeScore.current || 0;
                         const awayScore = event.awayScore.current || 0;
 
-                        const ai = generateAIAnalysis(homeScore, awayScore);
+                        const ai = generateAIAnalysis(homeTeam, awayTeam, homeScore, awayScore);
 
                         container.innerHTML += `
                             <div class="match-card">
@@ -100,10 +113,7 @@
             }
         }
 
-        // Saýt açylanda ilkinji gezek matçlary çekýär
         getLiveMatches();
-
-        // Her 5 minutdan (300,000 ms) awtomatiki täzeleýär (Limit sarp etmezlik üçin)
         setInterval(getLiveMatches, 300000);
     </script>
 
