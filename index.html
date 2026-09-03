@@ -5,27 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Analiz-TKM | Futbol Live & AI Analiz</title>
     <style>
-        body { font-family: Arial, sans-serif; background-color: #1a1a1a; color: #fff; margin: 0; padding: 20px; }
-        header { text-align: center; border-bottom: 2px solid #333; padding-bottom: 10px; }
-        .match-card { background: #2a2a2a; padding: 15px; margin: 10px 0; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
-        .btn { background: #28a745; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #121212; color: #e0e0e0; padding: 15px; }
+        header { text-align: center; padding: 20px 0; background: #1f1f1f; border-radius: 10px; margin-bottom: 20px; border: 1px solid #333; }
+        h1 { color: #00ff88; font-size: 24px; margin-bottom: 5px; }
+        p { color: #aaa; font-size: 14px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        .match-card { background: #1e1e1e; border: 1px solid #2a2a2a; padding: 15px; margin-bottom: 12px; border-radius: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .team-info { display: flex; flex-direction: column; gap: 5px; }
+        .league { font-size: 11px; color: #00ff88; text-transform: uppercase; font-weight: bold; }
+        .teams { font-size: 15px; font-weight: 600; }
+        .time { font-size: 12px; color: #888; }
+        .btn-analiz { background: linear-gradient(45deg, #00c853, #b2ff59); color: #000; font-weight: bold; border: none; padding: 10px 14px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .btn-analiz:hover { opacity: 0.9; transform: scale(1.02); }
     </style>
 </head>
 <body>
-    <header>
-        <h1>ANALIZ-TKM</h1>
-        <p>Janly Oýunlar we AI Çaklamalar</p>
-    </header>
+    <div class="container">
+        <header>
+            <h1>ANALIZ-TKM</h1>
+            <p>Janly Matçlar & Matematiki AI Çaklamalar</p>
+        </header>
 
-    <main>
-        <h2>Bugünki Duşuşyklar</h2>
+        <h2 style="font-size: 16px; margin-bottom: 10px; color: #fff;">Bugünki Duşuşyklar</h2>
+
         <div class="match-card">
-            <div>
-                <strong>Real Madrid vs Barcelona</strong><br>
-                <small>22:00 | La Liga</small>
+            <div class="team-info">
+                <span class="league">La Liga • 22:00</span>
+                <span class="teams">Real Madrid vs Barcelona</span>
+                <span class="time">AI Çaklama Taýýar</span>
             </div>
-            <button class="btn">Analiz Görmek (%85)</button>
+            <button class="btn-analiz">Analiz %88</button>
         </div>
-    </main>
+
+        <div class="match-card">
+            <div class="team-info">
+                <span class="league">Premier League • 20:30</span>
+                <span class="teams">Man. City vs Arsenal</span>
+                <span class="time">AI Çaklama Taýýar</span>
+            </div>
+            <button class="btn-analiz">Analiz %82</button>
+        </div>
+    </div>
 </body>
 </html>
